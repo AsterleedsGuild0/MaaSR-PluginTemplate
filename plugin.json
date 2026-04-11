@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "example_plugin",
+  "display_name": "示例插件",
+  "version": "0.1.0",
+  "description": "MaaStarResonance 侧载插件模板示例",
+  "author": "AZMIAO",
+  "license": "AGPL-3.0",
+  "pyz_file": "lib/example_plugin.pyz",
+  "entry_point": "example_plugin",
+  "dependencies": [],
+  "system_requirements": {
+    "platform": "windows",
+    "min_python_version": "3.11",
+    "notes": ""
+  },
+  "exports": {
+    "ExamplePlugin": "example_plugin.ExamplePlugin"
+  }
+}
