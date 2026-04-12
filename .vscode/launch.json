@@ -4,6 +4,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "初始化开发环境 (uv sync + init-dev)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/init_dev.py",
+            "console": "integratedTerminal",
+            "preLaunchTask": "uv sync"
+        },
+        {
             "name": "构建插件",
             "type": "debugpy",
             "request": "launch",
