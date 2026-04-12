@@ -18,8 +18,12 @@ import sys
 import zipapp
 from pathlib import Path
 
-# 添加 plugin_framework 到路径以导入配置模块
-sys.path.insert(0, str(Path(__file__).parent.parent / "plugin_framework"))
+# 添加 plugin_framework 到路径
+# 需要处理两种情况：
+# 1. 直接运行：__file__ 是绝对路径
+# 2. 作为模块导入：__file__ 可能是相对路径
+script_dir = Path(__file__).resolve().parent
+sys.path.insert(0, str(script_dir / "plugin_framework"))
 
 from config import get_config
 
@@ -143,9 +147,18 @@ def build_plugin(
     
     # 生成 plugin.json
     plugin_json = config.to_plugin_json()
+
+    # 1. 在插件目录生成 plugin.json（部署用）
     plugin_json_path = plugin_dir / "plugin.json"
     with open(plugin_json_path, "w", encoding="utf-8") as f:
         json.dump(plugin_json, f, ensure_ascii=False, indent=2)
+    log_info(f"生成插件目录的 plugin.json: {plugin_json_path}")
+
+    # 2. 在仓库根目录也生成 plugin.json（开发用）
+    root_plugin_json_path = repo_root / "plugin.json"
+    with open(root_plugin_json_path, "w", encoding="utf-8") as f:
+        json.dump(plugin_json, f, ensure_ascii=False, indent=2)
+    log_info(f"生成根目录的 plugin.json: {root_plugin_json_path}")
     
     log_success(f"插件构建完成: {plugin_dir}")
     return plugin_dir

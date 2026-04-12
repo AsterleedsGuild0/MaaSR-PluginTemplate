@@ -15,6 +15,15 @@ dev = [
     "pip>=25.3",
 ]
 
+[project.scripts]
+init-dev = "init_dev:main"
+
+[tool.uv]
+package = true
+
+[tool.setuptools]
+py-modules = ["init_dev"]
+
 # 插件元数据配置
 [tool.plugin]
 name = "example_plugin"
