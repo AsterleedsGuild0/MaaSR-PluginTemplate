@@ -32,21 +32,6 @@ MaaSR-PluginTemplate/
 └── README.md                    # 本文档
 ```
 
-## 🎯 设计理念
-
-### 代码分离
-
-本模板采用**代码分离**设计：
-
-- **src/** - 只包含插件的核心业务逻辑，会被打包到 `.pyz` 文件中
-- **plugin_framework/** - 开发时使用的框架代码（配置管理、插件管理等），**不会被打包**
-
-这样设计的好处：
-- ✅ 插件包更小（体积减少约 80%）
-- ✅ 插件代码更简洁，只关注业务逻辑
-- ✅ 框架代码可以独立更新，不影响已发布的插件
-- ✅ 代码职责更清晰，易于维护
-
 ## 🚀 快速开始
 
 ### 1. 使用模板创建新插件
@@ -117,11 +102,6 @@ from .your_plugin import YourPlugin
 
 __all__ = ["YourPlugin"]
 ```
-
-**重要**：
-- `src/` 目录只放插件的核心业务代码
-- 不要在 `src/` 中导入 `plugin_framework` 的代码
-- 保持 `src/` 简洁和专注
 
 ### 4. 本地构建测试
 
@@ -201,7 +181,8 @@ dependencies = [
 2. **plugin_framework/** - 框架和工具代码
    - ✅ 配置管理（`config.py`）
    - ✅ 插件管理（`plugin_manager.py`）
-   - ✅ 开发时使用的n   - ❌ 不会被打包到插件中
+   - ✅ 开发时使用的工具代码
+   - ❌ 不会被打包到插件中
 
 3. **scripts/** - 构建和工具脚本
    - ✅ 构建脚本
@@ -327,26 +308,10 @@ def test_plugin_config():
 
 ```toml
 [project]
-version = "0.2.0"  # 只在这里修改版本号
-```
-
-### 4. 遵循约定式提交
-
-使用约定式提交（Conventional Commits）：
-
-```
-feat: 新功能
-fix: Bug 修复
-docs: 文档更新
-style: 代码格式调整
-refactor: 代码重构
-perf: 性能优化
-test: 测试相关
-chore: 构建/工具链相关
+version = "1.0.0"  # 只在这里修改版本号
 ```
 
 ## 🔌 插件安装
-
 
 1. 从 GitHub Release 下载插件压缩包
 2. 解压到 MaaStarResonance 的 `agent/plugins/` 目录
@@ -376,29 +341,6 @@ agent/plugins/your_plugin/
 1. 验证 `pyproject.toml` 配置
 2. 检查依赖是否完整
 3. 查看 MaaStarResonance 日志
-
-## 🆕 更新说明
-
-### v0.2.0 的改进
-
-- ✅ **代码分离** - `src/` 只包含插件核心代码
-- ✅ **框架独立*n_framework/` 包含开发时使用的框架代码
-- ✅ **更小的包** - 打包后的插件不包含框架代码（体积减少约 80%）
-- ✅ **更清晰** - 代码职责更明确
-
-### v0.1.0 的改进
-
-- ✅ **统一配置管理** - 使用 `pyproject.toml` 作为单一配置源
-- ✅ **自动生成 plugin.json** - 构建时自动生成，无需手动维护
-- ✅ **简化配置** - 减少重复配置，提高可维护性
-
-## 📚 参考资料
-
-- [MaaStarResonance 主项目](https://github.com/233Official/MaaStarResonance)
-- [开发指南](./CONTRIBUTING.md)
-- [结构优化文档](./STRUCTURE_OPTIMIZATION.md)
-- [语义化版本规范](https://semver.org/lang/zh-CN/)
-- [约定式提交](https://www.conventionalcommits.org/zh-hans/)
 
 ## 📄 许可证
 
