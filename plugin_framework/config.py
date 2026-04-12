@@ -5,17 +5,9 @@
 """
 
 import json
-import sys
+import tomllib
 from pathlib import Path
 from typing import Any
-
-if sys.version_info >= (3, 11):
-    import tomllib
-else:
-    try:
-        import tomli as tomllib
-    except ImportError:
-        import toml as tomllib  # type: ignore
 
 
 class Config:
@@ -24,7 +16,7 @@ class Config:
     优先级: plugin.json > pyproject.toml
     """
     
-    def __init__(self, root_dir: Path | None = None):
+    def __init__(self, root_dir: Path):
         """初始化配置管理器
         
         Args:
@@ -47,6 +39,7 @@ class Config:
                     self._plugin_config = json.load(f)
             else:
                 self._plugin_config = {}
+        assert self._plugin_config is not None
         return self._plugin_config
     
     @property
@@ -59,6 +52,7 @@ class Config:
                     self._pyproject_config = tomllib.load(f)
             else:
                 self._pyproject_config = {}
+        assert self._pyproject_config is not None
         return self._pyproject_config
     
     def get(self, key: str, default: Any = None) -> Any:
@@ -179,7 +173,7 @@ class Config:
 _config: Config | None = None
 
 
-def get_config(root_dir: Path | None = None) -> Config:
+def get_config(root_dir: Path) -> Config:
     """获取全局配置实例
     
     Args:
@@ -191,4 +185,5 @@ def get_config(root_dir: Path | None = None) -> Config:
     global _config
     if _config is None or root_dir is not None:
         _config = Config(root_dir)
+    assert _config is not None
     return _config

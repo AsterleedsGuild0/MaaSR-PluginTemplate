@@ -18,15 +18,7 @@ import sys
 import zipapp
 from pathlib import Path
 
-# 添加 plugin_framework 到路径
-# 需要处理两种情况：
-# 1. 直接运行：__file__ 是绝对路径
-# 2. 作为模块导入：__file__ 可能是相对路径
-script_dir = Path(__file__).resolve().parent
-project_root = script_dir.parent
-sys.path.insert(0, str(project_root / "plugin_framework"))
-
-from config import get_config
+from plugin_framework.config import get_config
 
 
 def log_info(msg: str) -> None:

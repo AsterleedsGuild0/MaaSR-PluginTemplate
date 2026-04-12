@@ -7,21 +7,14 @@
 用法:
     uv run init-dev
     或
-    python init_dev.py
+    python scripts/init_dev.py
 """
 
 import json
 import sys
 from pathlib import Path
 
-# 添加 plugin_framework 到路径
-# 需要处理两种情况：
-# 1. 直接运行：__file__ 是绝对路径
-# 2. 作为模块导入：__file__ 可能是相对路径
-script_dir = Path(__file__).resolve().parent
-sys.path.insert(0, str(script_dir / "plugin_framework"))
-
-from config import get_config
+from plugin_framework.config import get_config
 
 
 def log_info(msg: str) -> None:
@@ -55,7 +48,7 @@ def main() -> int:
     log_info("开始初始化开发环境...")
     
     # 获取仓库根目录
-    repo_root = Path(__file__).parent.resolve()
+    repo_root = Path(__file__).parent.parent.resolve()
     
     # 生成 plugin.json
     generate_plugin_json(repo_root)

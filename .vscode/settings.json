@@ -24,8 +24,6 @@
   "python.testing.pytestArgs": ["."],
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
-  "cSpell.words": ["azmiao", "maasr", "pyproject", "toml", "venv", "zipapp"],
-  "python-envs.pythonProjects": [],
   "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
   "python.terminal.activateEnvironment": true,
   "terminal.integrated.env.osx": {
@@ -36,9 +34,6 @@
   },
   "terminal.integrated.env.windows": {
     "PATH": "${workspaceFolder}\\.venv\\Scripts;${env:PATH}"
-  },
-  "git.terminalEnvironment": {
-    "PATH": "${workspaceFolder}/.venv/bin:${workspaceFolder}\\.venv\\Scripts:${env:PATH}"
   },
   // 只影响资源管理器视图，VS Code 打开工作区时在列出目录树前会应用过滤；即使不排除也得枚举目录，所以性能差异不大，主要作用是视觉上隐藏
   "files.exclude": {

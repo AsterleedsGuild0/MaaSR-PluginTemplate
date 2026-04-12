@@ -57,13 +57,12 @@ MaaSR-PluginTemplate/
 │   ├── build_plugin.py          # 插件构建脚本
 │   ├── download_wheels.py       # 依赖下载脚本
 │   ├── generate_changelog.py   # 变更日志生成脚本
-│   └── init_dev.py              # 开发环境初始化脚本
+│   └── init_dev.py              # 仓库配置初始化脚本
 ├── .github/workflows/           # GitHub Actions 工作流
 │   └── release.yml              # 自动发布工作流
 ├── .vscode/                      # VSCode 配置
-│   ├── launch.json              # 调试配置（含初始化开发环境启动项）
+│   ├── launch.json              # 调试配置（含创建/更新仓库配置启动项）
 │   └── tasks.json               # 任务配置
-├── init_dev.py                  # 开发环境初始化入口脚本
 ├── pyproject.toml              # 项目配置（主配置文件）
 ├── plugin.json                  # 插件元数据（自动生成，不要手动编辑）
 └── README.md                    # 本文档
@@ -127,7 +126,7 @@ uv run init-dev
 
 **或者在 VSCode 中（推荐）：**
 1. 按 `F5` 或点击"运行和调试"
-2. 选择 "初始化开发环境 (uv sync + init-dev)"
+2. 选择 "创建/更新仓库配置 (uv sync + init-dev)"
 3. 点击运行
 
 **或者使用 VSCode 任务：**
@@ -417,7 +416,7 @@ uv run init-dev  # 重新生成 plugin.json
 ### 方法 2：VSCode 启动项
 
 1. 按 `F5` 或点击"运行和调试"
-2. 选择 "初始化开发环境 (uv sync + init-dev)"
+2. 选择 "创建/更新仓库配置 (uv sync + init-dev)"
 3. 点击运行
 
 ### 方法 3：VSCode 任务

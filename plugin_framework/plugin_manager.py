@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from .config import Config, get_config
+from .config import get_config
 
 
 class PluginManager:
@@ -159,4 +159,5 @@ def get_plugin_manager(root_dir: Path | None = None) -> PluginManager:
     global _manager
     if _manager is None or root_dir is not None:
         _manager = PluginManager(root_dir)
+    assert _manager is not None
     return _manager
