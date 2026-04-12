@@ -17,7 +17,7 @@
       "name": "创建/更新仓库配置",
       "type": "PowerShell",
       "request": "launch",
-      "script": "uv sync; if ($?) { uv run init-dev }",
+      "script": "uv sync --all-extras; if ($?) { uv run init-dev }",
       "cwd": "${workspaceFolder}"
     },
     {
