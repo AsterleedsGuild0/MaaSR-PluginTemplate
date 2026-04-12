@@ -40,7 +40,7 @@ packages = ["scripts", "plugin_framework"]
 [tool.plugin]
 name = "example_plugin"
 display_name = "示例插件"
-entry_point = "example_plugin"
+entry_point = "maasr_plugin_example"
 platform = "windows"
 min_python_version = "3.11"
 

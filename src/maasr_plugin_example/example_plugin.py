@@ -5,7 +5,7 @@
 """
 from typing import Any
 
-from .utils.common_util import get_runtime_config
+from maasr_plugin_example.utils.common_util import get_runtime_config
 
 
 class ExamplePlugin:
