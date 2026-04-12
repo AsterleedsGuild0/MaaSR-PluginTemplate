@@ -367,6 +367,11 @@ paket-files/
 __pycache__/
 *.pyc
 
+# Python 包元数据
+*.egg-info/
+*.egg
+.eggs/
+
 # Cake - Uncomment if you are using it
 # tools/**
 # !tools/packages.config

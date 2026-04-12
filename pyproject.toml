@@ -8,11 +8,23 @@ authors = [
 license = { text = "AGPL-3.0" }
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = []
+# 只包含插件实际需要打包的依赖
+dependencies = [
+    # 示例：如果你的插件需要某些主项目没有的库
+    # "requests>=2.31.0",
+]
 
 [project.optional-dependencies]
+# 开发依赖：主项目已有的依赖，仅用于本地开发
 dev = [
+    # 取消注释主项目已有的依赖后，本项目开发时可以使用，但是打包不会带上这些依赖
     "pip>=25.3",
+#    "loguru>=0.7.3",
+#    "maafw==5.10.0",
+#    "pre-commit>=4.5.0",
+#    "rapidfuzz>=3.14.3",
+#    "toml>=0.10.2",
+#    "tzdata>=2025.2",
 ]
 
 [project.scripts]
