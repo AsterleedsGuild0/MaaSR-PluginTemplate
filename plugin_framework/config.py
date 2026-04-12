@@ -169,10 +169,6 @@ class Config:
         }
 
 
-# 全局配置实例
-_config: Config | None = None
-
-
 def get_config(root_dir: Path) -> Config:
     """获取全局配置实例
     
@@ -182,8 +178,5 @@ def get_config(root_dir: Path) -> Config:
     Returns:
         Config: 配置实例
     """
-    global _config
-    if _config is None or root_dir is not None:
-        _config = Config(root_dir)
-    assert _config is not None
-    return _config
+    # 每次都创建新实例，确保读取最新的配置文件
+    return Config(root_dir)

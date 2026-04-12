@@ -33,10 +33,15 @@ def generate_plugin_json(repo_root: Path) -> None:
     Args:
         repo_root: 仓库根目录
     """
+    plugin_json_path = repo_root / "plugin.json"
+    
+    # 删除旧的 plugin.json，确保从 pyproject.toml 读取最新配置
+    if plugin_json_path.exists():
+        plugin_json_path.unlink()
+    
     config = get_config(repo_root)
     plugin_json = config.to_plugin_json()
     
-    plugin_json_path = repo_root / "plugin.json"
     with open(plugin_json_path, "w", encoding="utf-8") as f:
         json.dump(plugin_json, f, ensure_ascii=False, indent=2)
     
