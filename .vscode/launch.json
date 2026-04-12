@@ -4,7 +4,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "初始化开发环境 (uv run init-dev)",
+            "name": "初始化开发环境 (uv sync + init-dev)",
             "type": "PowerShell",
             "request": "launch",
             "script": "uv sync; if ($?) { uv run init-dev }",
