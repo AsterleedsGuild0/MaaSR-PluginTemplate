@@ -23,7 +23,8 @@ from pathlib import Path
 # 1. 直接运行：__file__ 是绝对路径
 # 2. 作为模块导入：__file__ 可能是相对路径
 script_dir = Path(__file__).resolve().parent
-sys.path.insert(0, str(script_dir / "plugin_framework"))
+project_root = script_dir.parent
+sys.path.insert(0, str(project_root / "plugin_framework"))
 
 from config import get_config
 
