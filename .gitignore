@@ -448,6 +448,9 @@ dist
 *.pyz
 *.zip
 
+# Plugin framework (development only)
+plugin_framework/__pycache__/
+
 # Tools
 tools/ImageCropper/**/*.png
 

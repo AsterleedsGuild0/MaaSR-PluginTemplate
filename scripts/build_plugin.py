@@ -18,6 +18,11 @@ import sys
 import zipapp
 from pathlib import Path
 
+# 添加 plugin_framework 到路径以导入配置模块
+sys.path.insert(0, str(Path(__file__).parent.parent / "plugin_framework"))
+
+from config import get_config
+
 
 def log_info(msg: str) -> None:
     """打印信息日志"""
@@ -34,35 +39,12 @@ def log_success(msg: str) -> None:
     print(f"[SUCCESS] {msg}")
 
 
-def read_plugin_config(config_path: Path) -> dict:
-    """读取插件配置文件
-    
-    Args:
-        config_path: plugin.json 文件路径
-        
-    Returns:
-        dict: 插件配置字典
-    """
-    if not config_path.exists():
-        log_error(f"插件配置文件不存在: {config_path}")
-        sys.exit(1)
-        
-    try:
-        with open(config_path, "r", encoding="utf-8") as f:
-            config = json.load(f)
-        return config
-    except json.JSONDecodeError as e:
-        log_error(f"插件配置文件格式错误: {e}")
-        sys.exit(1)
-
-
-def create_pyz(src_dir: Path, output_file: Path, entry_point: str) -> None:
+def create_pyz(src_dir: Path, output_file: Path) -> None:
     """创建 .pyz 文件
     
     Args:
         src_dir: 源代码目录
         output_file: 输出的 .pyz 文件路径
-        entry_point: Python 模块入口点
     """
     log_info(f"打包 {src_dir} -> {output_file}")
     
@@ -127,12 +109,11 @@ def build_plugin(
     Returns:
         Path: 插件目录路径
     """
-    # 读取插件配置
-    config_path = repo_root / "plugin.json"
-    config = read_plugin_config(config_path)
+    # 使用统一的配置系统
+    config = get_config(repo_root)
     
-    plugin_name = config["name"]
-    log_info(f"开始构建插件: {plugin_name}")
+    plugin_name = config.get_name()
+    log_info(f"开始构建插件: {plugin_name} v{config.get_version()}")
     
     # 创建插件目录结构
     plugin_dir = output_dir / plugin_name
@@ -147,23 +128,24 @@ def build_plugin(
     # 打包 .pyz 文件
     src_dir = repo_root / "src"
     pyz_file = lib_dir / f"{plugin_name}.pyz"
-    create_pyz(src_dir, pyz_file, config["entry_point"])
-    # 下载依赖
-    if not skip_deps and config.get("dependencies"):
-        deps_dir = plugin_dir / "deps"
-        # 从配置中提取依赖包名（去掉版本号）
-        requirements = []
-        for dep in config.get("dependencies", []):
-            # 如果是文件路径格式，跳过
-            if dep.startswith("deps/"):
-                continue
-            requirements.append(dep)
-        
-        if requirements:
-            download_dependencies(deps_dir, requirements)
+    create_pyz(src_dir, pyz_file)
     
-    # 复制 plugin.json
-    shutil.copy2(config_path, plugin_dir / "plugin.json")
+    # 下载依赖
+    if not skip_deps:
+        dependencies = config.get_dependencies()
+        if dependencies:
+            deps_dir = plugin_dir / "deps"
+            # 过滤掉本地文件路径格式的依赖
+            requirements = [dep for dep in dependencies if not dep.startswith("deps/")]
+            
+            if requirements:
+                download_dependencies(deps_dir, requirements)
+    
+    # 生成 plugin.json
+    plugin_json = config.to_plugin_json()
+    plugin_json_path = plugin_dir / "plugin.json"
+    with open(plugin_json_path, "w", encoding="utf-8") as f:
+        json.dump(plugin_json, f, ensure_ascii=False, indent=2)
     
     log_success(f"插件构建完成: {plugin_dir}")
     return plugin_dir
@@ -228,8 +210,8 @@ def main() -> int:
     
     # 创建 ZIP 压缩包
     if not args.no_zip:
-        config = read_plugin_config(repo_root / "plugin.json")
-        version = config["version"]
+        config = get_config(repo_root)
+        version = config.get_version()
         create_zip_package(plugin_dir, args.output, version)
     
     return 0
