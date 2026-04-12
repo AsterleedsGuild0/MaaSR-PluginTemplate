@@ -7,7 +7,7 @@
   "author": "AZMIAO",
   "license": "AGPL-3.0",
   "pyz_file": "lib/example_plugin.pyz",
-  "entry_point": "example_plugin",
+  "entry_point": "maasr_plugin_example",
   "dependencies": [],
   "system_requirements": {
     "platform": "windows",
