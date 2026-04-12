@@ -81,6 +81,10 @@ MaaSR-PluginTemplate/
    cd your-plugin-name
    ```
 
+**推荐安装 VSCode 扩展（可选但推荐）：**
+
+如果你使用 VSCode 进行开发，打开项目后 VSCode 会自动提示安装推荐的扩展。点击"安装"即可一键安装所有推荐扩展，以获得更好的开发体验（包括 Python 支持、代码格式化、调试等功能）。
+
 ### 2. 配置插件信息
 
 **只需编辑 `pyproject.toml` 文件**：

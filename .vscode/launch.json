@@ -4,12 +4,11 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "初始化开发环境 (uv sync + init-dev)",
-            "type": "debugpy",
+            "name": "初始化开发环境 (uv run init-dev)",
+            "type": "PowerShell",
             "request": "launch",
-            "program": "${workspaceFolder}/init_dev.py",
-            "console": "integratedTerminal",
-            "preLaunchTask": "uv sync"
+            "script": "uv sync; if ($?) { uv run init-dev }",
+            "cwd": "${workspaceFolder}"
         },
         {
             "name": "构建插件",
