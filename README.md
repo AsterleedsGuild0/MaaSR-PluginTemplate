@@ -13,11 +13,12 @@
   - [4. 开发插件代码](#4-开发插件代码)
   - [5. 本地构建测试](#5-本地构建测试)
   - [6. 发布版本](#6-发布版本)
+- [🎯 VSCode 启动项说明](#-vscode-启动项说明)
 - [📦 配置说明](#-配置说明)
   - [统一配置系统](#统一配置系统)
   - [pyproject.toml 配置项](#pyprojecttoml-配置项)
   - [依赖管理](#依赖管理)
-- [🛠️ 开发指南](#️-开发指南)
+- [🛠️ 开发指南](#-开发指南)
   - [代码组织原则](#代码组织原则)
   - [使用框架功能（开发时）](#使用框架功能开发时)
   - [读取插件元数据](#读取插件元数据)
@@ -45,9 +46,11 @@
 ```
 MaaSR-PluginTemplate/
 ├── src/                          # 插件核心代码（会被打包）
-│   ├── __init__.py              # 模块初始化
 │   ├── __main__.py              # 插件入口点
-│   └── example_plugin.py        # 示例插件实现
+│   └── maasr_plugin_example/    # 插件主模块（根据你的插件名称命名）
+│       ├── __init__.py          # 模块初始化
+│       ├── example_plugin.py    # 示例插件实现
+│       └── utils/               # 工具模块（可选）
 ├── plugin_framework/             # 插件框架（开发时使用，不打包）
 │   ├── __init__.py              # 框架初始化
 │   ├── config.py                # 统一配置管理
@@ -61,7 +64,7 @@ MaaSR-PluginTemplate/
 ├── .github/workflows/           # GitHub Actions 工作流
 │   └── release.yml              # 自动发布工作流
 ├── .vscode/                      # VSCode 配置
-│   ├── launch.json              # 调试配置（含创建/更新仓库配置启动项）
+│   ├── launch.json              # 调试配置（含多个实用启动项）
 │   └── tasks.json               # 任务配置
 ├── pyproject.toml              # 项目配置（主配置文件）
 ├── plugin.json                  # 插件元数据（自动生成，不要手动编辑）
@@ -101,6 +104,19 @@ dependencies = [
     # "requests>=2.31.0",
 ]
 
+[project.optional-dependencies]
+# 开发依赖：主项目已有的依赖，仅用于本地开发
+dev = [
+    # 取消注释主项目已有的依赖后，本项目开发时可以使用，但是打包不会带上这些依赖
+    "pip>=25.3",
+#    "loguru>=0.7.3",
+#    "maafw==5.10.0",
+#    "pre-commit>=4.5.0",
+#    "rapidfuzz>=3.14.3",
+#    "toml>=0.10.2",
+#    "tzdata>=2025.2",
+]
+
 [tool.plugin]
 name = "your_plugin"              # 插件模块名（Python 标识符）
 display_name = "你的插件"         # 显示名称
@@ -116,6 +132,12 @@ entry_point = "your_plugin"       # 入口点
 
 **配置完成后，必须运行以下命令来生成 `plugin.json` 并安装依赖：**
 
+**方式 1：使用 VSCode 启动项（强烈推荐）**
+1. 按 `F5` 或点击"运行和调试"
+2. 选择 "创建/更新仓库配置"
+3. 点击运行
+
+**方式 2：命令行**
 ```bash
 # 安装依赖并注册命令
 uv sync
@@ -123,16 +145,6 @@ uv sync
 # 根据 pyproject.toml 生成 plugin.json（必需！）
 uv run init-dev
 ```
-
-**或者在 VSCode 中（推荐）：**
-1. 按 `F5` 或点击"运行和调试"
-2. 选择 "创建/更新仓库配置 (uv sync + init-dev)"
-3. 点击运行
-
-**或者使用 VSCode 任务：**
-1. 按 `Ctrl+Shift+P` 打开命令面板
-2. 输入 "Tasks: Run Task"
-3. 选择 "uv sync + init-dev"
 
 **⚠️ 重要：每次修改 `pyproject.toml` 后，都需要重新运行上述命令！**
 
@@ -146,8 +158,10 @@ uv run init-dev
 
 **在 `src/` 目录下编写你的插件核心代码**：
 
+项目采用嵌套模块结构，你的插件代码应该放在 `src/your_plugin_module/` 目录下：
+
 ```python
-# src/your_plugin.py
+# src/your_plugin_module/your_plugin.py
 class YourPlugin:
     """你的插件类"""
     
@@ -165,7 +179,7 @@ class YourPlugin:
         pass
 ```
 
-更新 `src/__init__.py`：
+更新 `src/your_plugin_module/__init__.py`：
 
 ```python
 from .your_plugin import YourPlugin
@@ -173,15 +187,25 @@ from .your_plugin import YourPlugin
 __all__ = ["YourPlugin"]
 ```
 
+更新 `src/__main__.py` 作为插件入口：
+
+```python
+from your_plugin_module.your_plugin import YourPlugin
+
+if __name__ == "__main__":
+    plugin = YourPlugin()
+    plugin.start()
+```
+
 **在插件代码中读取元数据：**
 
 ```python
-# src/your_plugin.py
+# src/your_plugin_module/your_plugin.py
 import sys
 from pathlib import Path
 
-# 添加 plugin_framework 到路径
-sys.path.insert(0, str(Path(__file__).parent.parent / "plugin_framework"))
+# 添加 plugin_framework 到路径（向上两级到项目根目录）
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "plugin_framework"))
 
 from config import get_runtime_config
 
@@ -196,6 +220,12 @@ class YourPlugin:
 
 ### 5. 本地构建测试
 
+**方式 1：使用 VSCode 启动项（强烈推荐）**
+1. 按 `F5` 或点击"运行和调试"
+2. 选择 "构建打包插件"
+3. 点击运行
+
+**方式 2：命令行**
 ```bash
 # 构建插件
 python scripts/build_plugin.py
@@ -210,10 +240,33 @@ python scripts/build_plugin.py
 # 同时会在根目录更新 plugin.json（开发用）
 ```
 
+**构建脚本的自动清理机制：**
+
+打包脚本会自动执行以下清理操作，确保每次构建都是干净的：
+
+1. **删除旧的根目录 `plugin.json`**：确保从 `pyproject.toml` 读取最新配置
+2. **删除旧的插件目录**：清理 `dist/your_plugin/` 目录
+3. **删除旧的 ZIP 文件**：清理同名的 `.zip` 压缩包
+4. **重新生成所有文件**：基于最新配置重新创建所有输出文件
+
 ### 6. 发布版本
 
+**方式 1：使用 VSCode 启动项（强烈推荐）**
+1. 按 `F5` 或点击"运行和调试"
+2. 选择 "创建/更新仓库配置"
+3. 点击运行
+
+**方式 2：命令行**
+```bash
+# 安装依赖并注册命令
+uv sync
+
+# 根据 pyproject.toml 生成 plugin.json（必需！）
+uv run init-dev
+```
+
 1. 更新 `pyproject.toml` 中的版本号
-2. **运行配置更新命令**（重要！）：
+2. **使用 VSCode 启动项更新仓库配置 或者 输入如下命令**（重要！）
    ```bash
    uv sync
    uv run init-dev
@@ -227,6 +280,37 @@ python scripts/build_plugin.py
    ```
 4. GitHub Actions 会自动构建并发布 Release
 
+**注意**：
+- 打标签前必须先运行 `uv sync && uv run init-dev` 更新配置
+- 标签格式必须是 `v*`（如 `v1.0.0`）才会触发自动发布
+- CI/CD 构建时会自动清理旧文件并从 `pyproject.toml` 读取最新配置
+
+## 🎯 VSCode 启动项说明
+
+本项目已配置多个实用的 VSCode 启动项，**强烈推荐使用启动项来执行常用脚本**，比命令行更方便快捷。
+
+### 如何使用启动项
+
+1. 按 `F5` 或点击左侧"运行和调试"图标
+2. 在顶部下拉菜单中选择对应的启动项
+3. 点击绿色播放按钮或按 `F5` 运行
+
+### 可用的启动项
+
+| 启动项名称                 | 功能说明                             | 使用场景                      |
+|-----------------------|----------------------------------|---------------------------|
+| **Python 调试程序: 当前文件** | 调试当前打开的 Python 文件                | 开发调试单个 Python 脚本          |
+| **创建/更新仓库配置**         | 执行 `uv sync` + `uv run init-dev` | 修改 `pyproject.toml` 后必须运行 |
+| **构建打包插件**            | 执行 `build_plugin.py`             | 构建插件发布包                   |
+| **下载依赖**              | 执行 `download_wheels.py`          | 下载插件依赖的 wheel 文件          |
+| **生成完整 CHANGELOG**    | 执行 `generate_changelog.py`       | 生成变更日志文档                  |
+
+### 推荐工作流
+
+1. **初次配置或修改配置后**：运行 "创建/更新仓库配置"
+2. **开发过程中**：使用 "Python 调试程序: 当前文件" 调试代码
+3. **准备发布前**：依次运行 "构建打包插件" → "生成完整 CHANGELOG"
+
 ## 📦 配置说明
 
 ### 统一配置系统
@@ -239,16 +323,16 @@ python scripts/build_plugin.py
 
 ### pyproject.toml 配置项
 
-| 配置路径 | 类型 | 必需 | 说明 |
-|---------|------|------|------|
-| `project.name` | string | ✅ | 项目包名 |
-| `project.version` | string | ✅ | 版本号（SemVer） |
-| `project.description` | string | ✅ | 项目描述 |
-| `project.authors` | array | ✅ | 作者列表 |
-| `project.dependencies` | array | ❌ | 依赖列表 |
-| `tool.plugin.name` | string | ✅ | 插件模块名 |
-| `tool.plugin.display_name` | string | ❌ | 显示名称 |
-| `tool.plugin.entry_point` | string | ❌ | 入口点 |
+| 配置路径                       | 类型     | 必需 | 说明          |
+|----------------------------|--------|----|-------------|
+| `project.name`             | string | ✅  | 项目包名        |
+| `project.version`          | string | ✅  | 版本号（SemVer） |
+| `project.description`      | string | ✅  | 项目描述        |
+| `project.authors`          | array  | ✅  | 作者列表        |
+| `project.dependencies`     | array  | ❌  | 依赖列表        |
+| `tool.plugin.name`         | string | ✅  | 插件模块名       |
+| `tool.plugin.display_name` | string | ❌  | 显示名称        |
+| `tool.plugin.entry_point`  | string | ❌  | 入口点         |
 
 ### 依赖管理
 
@@ -316,12 +400,12 @@ info = manager.get_info()
 插件运行时可以通过 `get_runtime_config()` 读取 `plugin.json` 中的元数据：
 
 ```python
-# src/your_plugin.py
+# src/your_plugin_module/your_plugin.py
 import sys
 from pathlib import Path
 
-# 添加 plugin_framework 到路径
-sys.path.insert(0, str(Path(__file__).parent.parent / "plugin_framework"))
+# 添加 plugin_framework 到路径（向上两级到项目根目录）
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "plugin_framework"))
 
 from config import get_runtime_config
 
@@ -350,6 +434,12 @@ class YourPlugin:
 
 #### build_plugin.py
 
+**方式 1：使用 VSCode 启动项（强烈推荐）**
+1. 按 `F5` 或点击"运行和调试"
+2. 选择 "构建打包插件"
+3. 点击运行
+
+**方式 2：命令行**
 ```bash
 # 基本用法（自动从 pyproject.toml 读取配置）
 python scripts/build_plugin.py
@@ -364,8 +454,38 @@ python scripts/build_plugin.py --skip-deps
 python scripts/build_plugin.py --no-zip
 ```
 
+**构建流程说明：**
+
+1. **自动清理**：
+   - 删除根目录的旧 `plugin.json`，确保从 `pyproject.toml` 读取最新配置
+   - 删除 `dist/` 目录下的旧插件目录
+   - 删除同名的旧 ZIP 压缩包
+
+2. **配置读取**：
+   - 从 `pyproject.toml` 读取所有配置信息
+   - 自动生成符合规范的 `plugin.json`
+
+3. **代码打包**：
+   - 将 `src/` 目录打包为 `.pyz` 文件
+   - 只包含插件核心代码，不包含框架代码
+
+4. **依赖处理**：
+   - 下载依赖的 wheel 文件到 `deps/` 目录
+   - 可使用 `--skip-deps` 跳过
+
+5. **输出文件**：
+   - 在 `dist/your_plugin/` 生成插件目录（部署用）
+   - 在根目录生成 `plugin.json`（开发用）
+   - 创建 ZIP 压缩包（可选）
+
 #### download_wheels.py
 
+**方式 1：使用 VSCode 启动项（强烈推荐）**
+1. 按 `F5` 或点击"运行和调试"
+2. 选择 "下载依赖"
+3. 点击运行（已预配置 Windows 平台和 Python 3.13）
+
+**方式 2：命令行**
 ```bash
 # 下载依赖到 deps/ 目录
 python scripts/download_wheels.py
@@ -378,12 +498,18 @@ python scripts/download_wheels.py --platform win_amd64 --python-version 3.13
 
 使用 `generate_changelog.py` 自动生成 CHANGELOG：
 
+**方式 1：使用 VSCode 启动项（强烈推荐）**
+1. 按 `F5` 或点击"运行和调试"
+2. 选择 "生成完整 CHANGELOG"
+3. 点击运行
+
+**方式 2：命令行**
 ```bash
 # 生成完整 CHANGELOG
 python scripts/generate_changelog.py
 
 # 只生成最新版本
-python scripts/geangelog.py --latest
+python scripts/generate_changelog.py --latest
 ```
 
 ## 🔄 CI/CD 工作流
@@ -406,31 +532,25 @@ python scripts/geangelog.py --latest
 
 当你修改了 `pyproject.toml` 中的任何配置（版本号、依赖、插件信息等），必须执行以下步骤：
 
-### 方法 1：命令行（推荐）
+### 方法 1：VSCode 启动项（强烈推荐）
+
+1. 按 `F5` 或点击"运行和调试"
+2. 选择 "创建/更新仓库配置"
+3. 点击运行
+
+### 方法 2：命令行
 
 ```bash
 uv sync          # 同步依赖和项目配置
 uv run init-dev  # 重新生成 plugin.json
 ```
 
-### 方法 2：VSCode 启动项
-
-1. 按 `F5` 或点击"运行和调试"
-2. 选择 "创建/更新仓库配置 (uv sync + init-dev)"
-3. 点击运行
-
-### 方法 3：VSCode 任务
-
-1. 按 `Ctrl+Shift+P` 打开命令面板
-2. 输入 "Tasks: Run Task"
-3. 选择 "uv sync + init-dev"
-
 ### 为什么需要这样做？
 
-| 命令 | 作用 | 不执行的后果 |
-|------|------|-------------|
-| `uv sync` | 同步依赖、重新安装项目包、注册命令行入口点 | 依赖不更新、`init-dev` 命令不可用 |
-| `uv run init-dev` | 从 `pyproject.toml` 读取最新配置并生成 `plugin.json` | 插件运行时读取到旧的配置信息 |
+| 命令                | 作用                                         | 不执行的后果                 |
+|-------------------|--------------------------------------------|------------------------|
+| `uv sync`         | 同步依赖、重新安装项目包、注册命令行入口点                      | 依赖不更新、`init-dev` 命令不可用 |
+| `uv run init-dev` | 从 `pyproject.toml` 读取最新配置并生成 `plugin.json` | 插件运行时读取到旧的配置信息         |
 
 **典型场景：**
 
@@ -476,7 +596,7 @@ uv run init-dev  # 重新生成 plugin.json
 ### 1. 保持 src/ 简洁
 
 ```python
-# ✅ 好的做法 - src/my_plugin.py
+# ✅ 好的做法 - src/my_plugin_module/my_plugin.py
 class MyPlugin:
     def __init__(self):
         self.name = "MyPlugin"
@@ -485,8 +605,8 @@ class MyPlugin:
         # 业务逻辑
         pass
 
-# ❌ 不好的做法 - 不要在 src/ 中导入框架代码
-from config import get_config  # 这是框架代码，不应该在 src/ 中
+# ❌ 不好的做法 - 不要在 src/ 中直接导入框架代码
+from config import get_config  # 这是框架代码，需要通过 sys.path 添加后才能使用
 ```
 
 ### 2. 使用框架功能（开发时）
