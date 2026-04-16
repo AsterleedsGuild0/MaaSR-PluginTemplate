@@ -4,6 +4,7 @@
 
 ### 🐛 Bug修复
 
+- 修复Action文件报错 @azmiao
 - 调整源代码目录结构确保引入完整包 @azmiao
 - 修复依赖下载问题 @azmiao
 - 修复插件配置更新失效问题 @azmiao
@@ -27,6 +28,7 @@
 
 ### 🧹 日常维护
 
+- Update CHANGELOG @github-actions[bot]
 - 修改脚手架和文档 @azmiao
 - 调整结构，增加脚手架，修改文档 @azmiao
 
