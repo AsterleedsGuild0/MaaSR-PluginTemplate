@@ -94,10 +94,17 @@ jobs:
           echo "=== 验证plugin.json ==="
           unzip -p dist/*.zip */plugin.json | python -m json.tool
 
+      - name: Get plugin filename
+        id: get_filename
+        run: |
+          filename=$(ls dist/*.zip | xargs -n 1 basename)
+          echo "filename=$filename" >> $GITHUB_OUTPUT
+          echo "Plugin filename: $filename"
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: plugin-package
+          name: ${{ steps.get_filename.outputs.filename }}
           path: dist/*.zip
 
   changelog:
