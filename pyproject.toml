@@ -7,7 +7,7 @@ authors = [
 ]
 license = { text = "AGPL-3.0" }
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.13"
 # 只包含插件实际需要打包的依赖
 dependencies = [
     # 示例：如果你的插件需要某些主项目没有的库
@@ -42,7 +42,7 @@ name = "example_plugin"
 display_name = "示例插件"
 entry_point = "maasr_plugin_example"
 platform = "windows"
-min_python_version = "3.11"
+min_python_version = "3.13"
 
 # isort检查工具配置
 [tool.isort]

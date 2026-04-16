@@ -11,7 +11,7 @@
   "dependencies": [],
   "system_requirements": {
     "platform": "windows",
-    "min_python_version": "3.11",
+    "min_python_version": "3.13",
     "notes": ""
   },
   "exports": {}
