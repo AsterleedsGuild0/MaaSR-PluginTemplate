@@ -14,11 +14,11 @@
       "name": "本地测试启动",
       "type": "debugpy",
       "request": "launch",
-      "module": "src",
+      "program": "${workspaceFolder}/scripts/run_local.py",
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
       "env": {
-        "PYTHONPATH": "${workspaceFolder}"
+        "PYTHONPATH": "${workspaceFolder}/src"
       },
       "justMyCode": false
     },
