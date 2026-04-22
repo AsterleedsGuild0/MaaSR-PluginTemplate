@@ -1,23 +1,28 @@
 [project]
+# 插件项目ID
 name = "example-plugin"
+# 版本号
 version = "1.0.0"
+# 描述
 description = "MaaStarResonance 侧载插件模板示例"
+# 作者
 authors = [
     { name = "AZMIAO", email = "2362020227@qq.com" },
 ]
+# License
 license = { text = "AGPL-3.0" }
+# 帮助文档
 readme = "README.md"
+# Python版本要求
 requires-python = ">=3.13"
-# 只包含插件实际需要打包的依赖
+# 运行和打包生成插件包所需独立依赖，只填主项目没有的依赖 | 打包时会生成 whl 文件
 dependencies = [
-    # 示例：如果你的插件需要某些主项目没有的库
     # "requests>=2.31.0",
 ]
 
 [project.optional-dependencies]
-# 开发依赖：主项目已有的依赖，仅用于本地开发
+# 主项目已有的依赖，取消注释后说明本插件也需要使用 | 打包时不会生成 whl 重复安装
 dev = [
-    # 取消注释主项目已有的依赖后，本项目开发时可以使用，但是打包不会带上这些依赖
     "pip>=25.3",
 #    "loguru>=0.7.3",
 #    "maafw==5.10.0",
@@ -27,23 +32,25 @@ dev = [
 #    "tzdata>=2025.2",
 ]
 
+# 插件元数据配置
+[tool.plugin]
+# 插件显示名字
+display_name = "示例插件"
+# 程序入口 | 一般填写 src 下的插件包名即可
+entry_point = "maasr_plugin_example"
+
+# 程序同步更新脚本
 [project.scripts]
 init-dev = "scripts.init_dev:main"
 
+# UV 包配置
 [tool.uv]
 package = true
 
+# 本地开发扫描包路径
 [tool.setuptools.packages.find]
 where = ["src", "."]
 exclude = ["tests*", "docs*"]
-
-# 插件元数据配置
-[tool.plugin]
-name = "example_plugin"
-display_name = "示例插件"
-entry_point = "maasr_plugin_example"
-platform = "windows"
-min_python_version = "3.13"
 
 # isort检查工具配置
 [tool.isort]

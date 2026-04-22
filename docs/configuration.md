@@ -10,16 +10,37 @@
 
 ## pyproject.toml 配置项
 
-| 配置路径                       | 类型     | 必需 | 说明          |
-|----------------------------|--------|----|-------------|
-| `project.name`             | string | ✅  | 项目包名        |
-| `project.version`          | string | ✅  | 版本号（SemVer） |
-| `project.description`      | string | ✅  | 项目描述        |
-| `project.authors`          | array  | ✅  | 作者列表        |
-| `project.dependencies`     | array  | ❌  | 依赖列表        |
-| `tool.plugin.name`         | string | ✅  | 插件模块名       |
-| `tool.plugin.display_name` | string | ❌  | 显示名称        |
-| `tool.plugin.entry_point`  | string | ❌  | 入口点         |
+### `[project]` 标准配置
+
+| 配置路径                       | 类型     | 必需 | 说明                          |
+|----------------------------|--------|----|-------------------------------|
+| `project.name`             | string | ✅  | 项目包名（自动推导为插件名，连字符转下划线） |
+| `project.version`          | string | ✅  | 版本号（SemVer）                  |
+| `project.description`      | string | ✅  | 项目描述                         |
+| `project.authors`          | array  | ✅  | 作者列表                         |
+| `project.requires-python`  | string | ✅  | Python 版本要求                    |
+| `project.dependencies`     | array  | ❌  | 依赖列表                         |
+
+### `[tool.plugin]` 插件专属配置
+
+仅包含 `[project]` 中无法表达的插件特有字段：
+
+| 配置路径                       | 类型     | 必需 | 说明                                    |
+|----------------------------|--------|----|---------------------------------------|
+| `tool.plugin.display_name` | string | ❌  | 显示名称（默认使用插件名）                  |
+| `tool.plugin.entry_point`  | string | ❌  | 入口点（默认使用插件名，对应 `src/` 下的模块目录名） |
+
+### 自动推导规则
+
+以下字段无需在 `[tool.plugin]` 中重复配置，会自动从 `[project]` 推导：
+
+| plugin.json 字段       | 推导来源                  | 示例                                |
+|----------------------|-------------------------|-------------------------------------|
+| `name`               | `project.name`（连字符→下划线）| `example-plugin` → `example_plugin` |
+| `version`            | `project.version`        | `1.0.0`                             |
+| `description`        | `project.description`    |                                     |
+| `author`             | `project.authors[0].name`|                                     |
+| `license`            | `project.license.text`   |                                     |
 
 ## 依赖管理
 

@@ -106,8 +106,16 @@ class Config:
         return self.get("version") or self.get("project.version", "0.0.0")
     
     def get_name(self) -> str:
-        """获取插件名称"""
-        return self.get("name") or self.get("tool.plugin.name") or self.get("project.name", "unknown")
+        """获取插件名称
+        
+        优先级: plugin.json.name > tool.plugin.name > project.name（连字符转下划线）
+        """
+        name = self.get("name") or self.get("tool.plugin.name")
+        if name:
+            return name
+        # 从 project.name 推导：连字符转下划线，符合 Python 模块命名规范
+        project_name = self.get("project.name", "unknown")
+        return project_name.replace("-", "_")
     
     def get_display_name(self) -> str:
         """获取显示名称"""
@@ -137,7 +145,10 @@ class Config:
         return self.get("dependencies") or self.get("project.dependencies", [])
     
     def get_entry_point(self) -> str:
-        """获取入口点"""
+        """获取入口点
+        
+        优先级: plugin.json.entry_point > tool.plugin.entry_point > name
+        """
         return self.get("entry_point") or self.get("tool.plugin.entry_point") or self.get_name()
     
     def to_plugin_json(self) -> dict[str, Any]:
@@ -148,7 +159,7 @@ class Config:
         """
         name = self.get_name()
         return {
-            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "$schema": "docs/plugin-schema.json",
             "name": name,
             "display_name": self.get_display_name(),
             "version": self.get_version(),
@@ -158,14 +169,6 @@ class Config:
             "pyz_file": f"lib/{name}.pyz",
             "entry_point": self.get_entry_point(),
             "dependencies": self.get_dependencies(),
-            "system_requirements": {
-                "platform": self.get("system_requirements.platform") 
-                           or self.get("tool.plugin.platform", "windows"),
-                "min_python_version": self.get("system_requirements.min_python_version")
-                                     or self.get("tool.plugin.min_python_version", "3.11"),
-                "notes": self.get("system_requirements.notes", "")
-            },
-            "exports": self.get("exports", {})
         }
 
 

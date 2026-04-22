@@ -1,5 +1,5 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$schema": "docs/plugin-schema.json",
   "name": "example_plugin",
   "display_name": "示例插件",
   "version": "1.0.0",
@@ -8,11 +8,5 @@
   "license": "AGPL-3.0",
   "pyz_file": "lib/example_plugin.pyz",
   "entry_point": "maasr_plugin_example",
-  "dependencies": [],
-  "system_requirements": {
-    "platform": "windows",
-    "min_python_version": "3.13",
-    "notes": ""
-  },
-  "exports": {}
+  "dependencies": []
 }

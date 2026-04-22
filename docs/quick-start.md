@@ -20,40 +20,29 @@
 
 ```toml
 [project]
-name = "your-plugin"              # 插件包名
+name = "your-plugin"              # 插件包名（自动推导为插件名：your_plugin）
 version = "0.1.0"                 # 版本号
 description = "你的插件描述"
 authors = [
     { name = "你的名字", email = "your@email.com" },
 ]
+requires-python = ">=3.13"
 dependencies = [
     # 在这里添加依赖
     # "requests>=2.31.0",
 ]
 
-[project.optional-dependencies]
-# 开发依赖：主项目已有的依赖，仅用于本地开发
-dev = [
-    # 取消注释主项目已有的依赖后，本项目开发时可以使用，但是打包不会带上这些依赖
-    "pip>=25.3",
-#    "loguru>=0.7.3",
-#    "maafw==5.10.0",
-#    "pre-commit>=4.5.0",
-#    "rapidfuzz>=3.14.3",
-#    "toml>=0.10.2",
-#    "tzdata>=2025.2",
-]
-
+# 插件专属配置（不填则默认从 project.name 推导）
 [tool.plugin]
-name = "your_plugin"              # 插件模块名（Python 标识符）
 display_name = "你的插件"         # 显示名称
-entry_point = "your_plugin"       # 入口点
+entry_point = "your_plugin"       # 入口点（对应 src/ 下的模块目录名）
 ```
 
 **重要提示**：
 - 所有配置都在 `pyproject.toml` 中
 - 不需要手动维护 `plugin.json`（自动生成）
 - 版本号只在一个地方维护
+- 插件名自动从 `project.name` 推导（连字符转下划线），无需重复配置
 
 ## 3. 初始化开发环境
 
