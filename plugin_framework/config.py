@@ -125,20 +125,25 @@ class Config:
         """获取描述"""
         return self.get("description") or self.get("project.description", "")
     
-    def get_author(self) -> str:
-        """获取作者"""
-        author = self.get("author")
-        if author:
-            return author
+    def get_authors(self) -> list[str]:
+        """获取作者列表
         
-        # 从 pyproject.toml 的 authors 列表获取
-        authors = self.get("project.authors", [])
-        if authors and isinstance(authors, list) and len(authors) > 0:
-            first_author = authors[0]
-            if isinstance(first_author, dict):
-                return first_author.get("name", "")
+        优先级: plugin.json.authors > project.authors
+        """
+        # 先尝试从 plugin.json 读取
+        authors = self.get("authors")
+        if authors and isinstance(authors, list):
+            return authors
         
-        return ""
+        # 从 pyproject.toml 的 authors 列表提取 name
+        authors_config = self.get("project.authors", [])
+        if authors_config and isinstance(authors_config, list):
+            return [
+                a.get("name", "") for a in authors_config
+                if isinstance(a, dict) and a.get("name")
+            ]
+        
+        return []
     
     def get_dependencies(self) -> list[str]:
         """获取依赖列表"""
@@ -164,7 +169,7 @@ class Config:
             "display_name": self.get_display_name(),
             "version": self.get_version(),
             "description": self.get_description(),
-            "author": self.get_author(),
+            "authors": self.get_authors(),
             "license": self.get("license") or self.get("project.license.text", "AGPL-3.0"),
             "pyz_file": f"lib/{name}.pyz",
             "entry_point": self.get_entry_point(),

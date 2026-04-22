@@ -28,9 +28,12 @@
       "type": "string",
       "description": "插件简要描述"
     },
-    "author": {
-      "type": "string",
-      "description": "插件作者"
+    "authors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "插件作者列表"
     },
     "license": {
       "type": "string",

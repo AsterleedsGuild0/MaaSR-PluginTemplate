@@ -4,7 +4,9 @@
   "display_name": "示例插件",
   "version": "1.0.0",
   "description": "MaaStarResonance 侧载插件模板示例",
-  "author": "AZMIAO",
+  "authors": [
+    "AZMIAO"
+  ],
   "license": "AGPL-3.0",
   "pyz_file": "lib/example_plugin.pyz",
   "entry_point": "maasr_plugin_example",
