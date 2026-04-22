@@ -4,21 +4,23 @@
   "version": "1.0.0",
   "configurations": [
     {
-      "name": "Python 调试程序: 当前文件",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${file}",
-      "console": "integratedTerminal",
-      "env": {
-        "PYTHONPATH": "${workspaceFolder}"
-      }
-    },
-    {
       "name": "创建/更新仓库配置",
       "type": "PowerShell",
       "request": "launch",
       "script": "uv sync --all-extras; if ($?) { uv run init-dev }",
       "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "本地测试启动",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "src",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}"
+      },
+      "justMyCode": false
     },
     {
       "name": "构建打包插件",
