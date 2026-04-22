@@ -471,3 +471,6 @@ scripts/config.toml
 
 # MacOS
 .DS_Store
+
+# superpowers
+docs/superpowers/*

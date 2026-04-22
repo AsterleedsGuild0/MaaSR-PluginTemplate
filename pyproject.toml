@@ -33,8 +33,9 @@ init-dev = "scripts.init_dev:main"
 [tool.uv]
 package = true
 
-[tool.setuptools]
-packages = ["scripts", "plugin_framework"]
+[tool.setuptools.packages.find]
+where = ["src", "."]
+exclude = ["tests*", "docs*"]
 
 # 插件元数据配置
 [tool.plugin]
