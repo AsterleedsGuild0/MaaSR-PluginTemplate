@@ -19,21 +19,15 @@ def get_runtime_config() -> dict[str, Any]:
     # 获取当前文件的路径
     current_file = Path(__file__).resolve()
 
-    # 尝试多个可能的路径
-    possible_paths = [
-        # 开发环境：plugin_framework/config.py -> 根目录
-        current_file.parent.parent / "plugin.json",
-        # 部署环境：lib/xxx.pyz/plugin_framework/config.py -> 插件目录
-        current_file.parent.parent.parent.parent / "plugin.json",
-    ]
+    # 从当前文件逐级向上查找，兼容源码目录和 .pyz 部署目录。
+    possible_paths = [parent / "plugin.json" for parent in current_file.parents]
 
     for plugin_json_path in possible_paths:
         if plugin_json_path.exists():
             with open(plugin_json_path, "r", encoding="utf-8") as f:
                 return json.load(f)
 
-    # 如果都找不到，抛出异常
     raise FileNotFoundError(
-        f"无法找到 plugin.json，尝试过的路径：\n" +
-        "\n".join(f"  - {p}" for p in possible_paths)
+        f"无法找到 plugin.json，尝试过的路径：\n"
+        + "\n".join(f"  - {p}" for p in possible_paths)
     )
